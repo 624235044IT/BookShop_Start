@@ -3,11 +3,11 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-9">
-          <Books v-bind:books="books" v-on:add:book="AddtoCart"/>
+          <Books v-bind:books="books" v-on:add:book="AddtoCart" />
         </div>
         <div class="col-lg-3">
-          <Cart v-bind:cart="cart" v-on:decrease:cart="Decrease"/><br />
-          <h4><b>Total: {{computedTotal}}</b></h4>
+          <Cart v-bind:cart="cart" v-on:decrease:cart="Decrease" v-on:Increase:cart="Increase" v-on:Delete:cart="Delete"/><br />
+          <h4><b>Total: {{ computeTotal }}</b></h4>
         </div>
       </div>
     </div>
@@ -24,36 +24,50 @@ export default {
     Cart,
   },
   computed:{
-      computedTotal: function(){
+      computeTotal: function(){
           var total =0;
-
-          this.cart.forEach((book)=> {
-              total=total+(book.qty*book.price);
+          
+          this.cart.forEach( (book)=>{ 
+              total=total+ (book.qty*book.price);
           });
 
           return total;
+
       }
 
   },
-  methods:{
-      Decrease(bookId){
-          var cartIndex=this.cart.findIndex(x => x.bookid === bookId);
-          if (this.cart[cartIndex].qty>1){
-              this.cart[cartIndex].qty--;
+  methods: {
+    Increase(bookId){
+        var IncreaseIndex=this.cart.findIndex(x => x.bookid === bookId);
+        if (this.cart[IncreaseIndex].qty>0){
+            this.cart[IncreaseIndex].qty++ ;
+        }
+    },
+
+    Decrease(bookId){
+        var DecreaseIndex=this.cart.findIndex(x => x.bookid === bookId);
+        if (this.cart[DecreaseIndex].qty>1){
+            this.cart[DecreaseIndex].qty-- ;
+        }
+
+    },
+    Delete(book){
+        this.cart.splice(book,1);
+
+    },
+    AddtoCart(book) {
+      if (this.cart.findIndex(x => x.bookid === book.bookid) == -1) {
+        this.cart = [
+          ...this.cart,
+          {
+           "bookid": book.bookid,
+           "title": book.title,
+           "price": book.price,
+           "qty": 1,
           }
-      },
-      AddtoCart(book){
-
-            if (this.cart.findIndex(x => x.bookid === book.bookid) == -1){
-              this.cart=[...this.cart,{
-              "bookid": book.bookid,
-              "title": book.title,
-              "price": book.price,
-              "qty": 4
-              }];
-            }
-
+        ];
       }
+    }
   },
   data() {
     return {

@@ -2,7 +2,7 @@
 <div>
     <h2>Books in Cart</h2>
     <div v-bind:key="book.bookid" v-for="book in cart">
-        <CartItem v-bind:book="book" v-on:decrease:cartitem="Decrease" />
+        <CartItem v-bind:book="book" v-on:decrease:cartitem="Decrease" v-on:Increase:cartitem="Increase" v-on:Delete:cartitem="Delete" />
     </div>
 </div>
 </template>
@@ -16,6 +16,14 @@ export default {
         CartItem
     },
     methods:{
+       Increase(bookId){
+            this.$emit("Increase:cart",bookId);
+        },
+        Delete(book){
+            this.$emit("Delete:cart",book);
+
+        },
+        
         Decrease(bookId){
             this.$emit("decrease:cart",bookId);
         }
